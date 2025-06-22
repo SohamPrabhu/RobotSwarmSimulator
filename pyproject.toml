@@ -22,7 +22,6 @@ classifiers = [
 ]
 keywords = ["robotics", "swarm", "agent-based", "simulator"]
 dependencies = [
-    "cma",
     "matplotlib",
     "numpy",
     "opencv-python",
