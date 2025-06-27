@@ -1,8 +1,9 @@
 import unittest
 
 from novel_swarms.sensors.BinaryFOVSensor import BinaryFOVSensor
-
-
+from novel_swarms.sensors.AbstractSensor import AbstractSensor
+from novel_swarms.agent.MazeAgent import MazeAgent,MazeAgentConfig
+from novel_swarms.world.RectangularWorld import RectangularWorldConfig, RectangularWorld
 class TestFOVSensor(unittest.TestCase):
     pass
 
@@ -61,3 +62,49 @@ class TestSensorConf(unittest.TestCase):
             self.assertEqual(self.bfv.seed, self.cd["seed"])
         else:
             self.assertIsNone(self.bfv.seed)
+
+class TestAbsSensor(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        agetnConf =  MazeAgentConfig()
+        world_config = RectangularWorldConfig(size=[10, 10], time_step=1 / 40)
+        world = RectangularWorld(world_config)
+        parent = MazeAgent(config=agetnConf, world=world)
+        agent = MazeAgent(world=world,config=agetnConf)
+
+        cls.cd: dict = {
+            "agent": agent,
+            "parent": parent,
+            "static_position":(0,0),
+            "n_possible_states": 2,
+            "draw": True
+        }
+        cls.afb = AbstractSensor(
+            agent=cls.cd["agent"],
+            parent=cls.cd["parent"],
+            n_possible_states=cls.cd["n_possible_states"],
+            draw=cls.cd["draw"],
+            static_position=cls.cd["static_position"]
+        )
+    def test_agent(self):
+        self.assertEqual(self.cd["agent"],self.afb.agent)
+    def test_set_agent(self):
+        agetnConf =  MazeAgentConfig()
+        world_config = RectangularWorldConfig(size=[10, 10], time_step=1 / 40)
+        world = RectangularWorld(world_config)
+        new_agent = MazeAgent(config=agetnConf, world=world)
+        self.afb.set_agent(new_agent)
+        self.assertEqual(new_agent,self.afb.agent)
+    def test_parent(self):
+        self.assertEqual(self.cd["parent"],self.afb.parent)    
+    def test_set_parent(self):
+        agetnConf =  MazeAgentConfig()
+        world_config = RectangularWorldConfig(size=[10, 10], time_step=1 / 40)
+        world = RectangularWorld(world_config)
+        new_parent = MazeAgent(config=agetnConf, world=world)
+        self.afb.set_parent(new_parent)
+        self.assertEqual(new_parent,self.afb.parent)
+        
+        
+    
+    
